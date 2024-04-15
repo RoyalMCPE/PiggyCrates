@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace DaPigGuy\PiggyCrates;
 
+use DaPigGuy\libPiggyUpdateChecker\tasks\CheckUpdatesTask;
 use DaPigGuy\PiggyCrates\tiles\CrateTile;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\Chest as BlockChest;
 use pocketmine\block\tile\Chest;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -25,7 +26,7 @@ class EventListener implements Listener
         $world = $block->getPosition()->getWorld();
         $item = $player->getInventory()->getItemInHand();
 
-        if ($block->getId() === BlockLegacyIds::CHEST) {
+        if ($block instanceof BlockChest) {
             $tile = $world->getTile($block->getPosition());
             if ($tile instanceof CrateTile) {
                 if ($tile->getCrateType() === null) {

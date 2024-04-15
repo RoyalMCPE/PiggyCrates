@@ -6,9 +6,10 @@ namespace DaPigGuy\PiggyCrates\crates;
 
 use DaPigGuy\PiggyCrates\PiggyCrates;
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
+use pocketmine\item\StringToItemParser;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\player\Player;
+use RuntimeException;
 
 class Crate
 {
@@ -72,7 +73,12 @@ class Crate
 
     public function giveKey(Player $player, int $amount): void
     {
-        $key = ItemFactory::getInstance()->get((int)$this->plugin->getConfig()->getNested("keys.id"), (int)$this->plugin->getConfig()->getNested("keys.meta"), $amount);
+        // TODO: Make sure the item is valid
+        $key = StringToItemParser::getInstance()->parse($keyId = $this->plugin->getConfig()->getNested("keys.id"));
+        if(!$key) {
+            throw new RuntimeException("Invalid key item identifier '" . $keyId . "' supplied in crate type " . $this->getName() . ".");
+        }
+        $key->setCount($amount);
         $key->setCustomName(ucfirst(str_replace("{CRATE}", $this->getName(), $this->plugin->getConfig()->getNested("keys.name"))));
         $key->setLore([str_replace("{CRATE}", $this->getName(), $this->plugin->getConfig()->getNested("keys.lore"))]);
         $key->getNamedTag()->setString("KeyType", $this->getName());
@@ -81,8 +87,10 @@ class Crate
 
     public function isValidKey(Item $item): bool
     {
-        return $item->getId() === (int)$this->plugin->getConfig()->getNested("keys.id") &&
-            $item->getMeta() === (int)$this->plugin->getConfig()->getNested("keys.meta") &&
+        $compare = StringToItemParser::getInstance()->parse($this->plugin->getConfig()->getNested("keys.id"));
+        return
+            $compare !== null && // Invalid entry in keys.id
+            $item->getStateId() === $compare->getStateId() &&
             ($keyTypeTag = $item->getNamedTag()->getTag("KeyType")) instanceof StringTag &&
             $keyTypeTag->getValue() === $this->getName();
     }

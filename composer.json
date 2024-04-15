@@ -1,0 +1,31 @@
+{
+    "name": "dapigguy/piggycrates",
+    "description": "A crate plugin for PocketMine-MP supporting unlimited crate types",
+    "license": "Apache-2.0",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/DaPigGuy/libPiggyUpdateChecker.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Muqsit/InvMenu.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Paroxity/Commando.git"
+        }
+    ],
+    "require": {
+        "dapigguy/libpiggyupdatechecker": "dev-master",
+        "muqsit/invmenu": "dev-pm5#cd268cb359f9953632c9f55649479f7ccb1a3bda",
+        "cortexpe/commando": "dev-master#8473a5030c7e9bed6f7a25533a797361898ab47e"
+    },
+    "require-dev": {
+        "pocketmine/pocketmine-mp": "^5.0.0",
+        "sof3/pharynx": "^0.3.0"
+    },
+    "scripts": {
+        "build": "@php -dphar.readonly=0 ./vendor/bin/pharynx -c -i . -s src/ -p=build/PiggyCrates.phar -o build/pharynx-output"
+    }
+}

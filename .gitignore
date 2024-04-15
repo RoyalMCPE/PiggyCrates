@@ -22,3 +22,9 @@ $RECYCLE.BIN/
 
 # Floobits
 \.floo
+
+# Pharynx
+/build/
+
+# Composer
+/vendor/

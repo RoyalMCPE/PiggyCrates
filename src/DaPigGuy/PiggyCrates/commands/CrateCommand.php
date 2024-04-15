@@ -10,11 +10,12 @@ use CortexPE\Commando\exception\ArgumentOrderException;
 use DaPigGuy\PiggyCrates\PiggyCrates;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
+use pocketmine\plugin\Plugin;
 
 class CrateCommand extends BaseCommand
 {
     /** @var PiggyCrates */
-    protected $plugin;
+    protected Plugin $plugin;
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {

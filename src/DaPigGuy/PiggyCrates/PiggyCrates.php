@@ -22,12 +22,14 @@ use muqsit\invmenu\InvMenuHandler;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
-use pocketmine\item\ItemFactory;
+use pocketmine\item\StringToItemParser;
 use pocketmine\nbt\JsonNbtParser;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
+use RuntimeException;
 
 class PiggyCrates extends PluginBase
 {
@@ -88,7 +90,12 @@ class PiggyCrates extends PluginBase
                         $this->getLogger()->warning("Invalid crate item NBT supplied in crate type " . $crateName . ".");
                     }
                 }
-                $item = ItemFactory::getInstance()->get($itemData["id"], $itemData["meta"], $itemData["amount"], $tags);
+                $item = StringToItemParser::getInstance()->parse($itemData["id"]);
+                if(!$item) {
+                    throw new RuntimeException("Invalid crate item identifier '" . $itemData["id"] . "'supplied in crate type " . $crateName . ".");
+                }
+                $item->setCount($itemData["amount"]);
+                $item->setNamedTag($tags ?? CompoundTag::create());
                 if (isset($itemData["name"])) $item->setCustomName($itemData["name"]);
                 if (isset($itemData["lore"])) $item->setLore(explode("\n", $itemData["lore"]));
                 if (isset($itemData["enchantments"])) foreach ($itemData["enchantments"] as $enchantmentData) {
